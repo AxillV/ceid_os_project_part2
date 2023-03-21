@@ -1,0 +1,68 @@
+WHATS LEFT:
+./scheduler prio 100 homogeneous.txt also crashes (every second time doesnt finish running also)
+    ^ doesnt crash, just doesnt finish sometimes (stuck on last one??) (turns out it errors out sometimes, check image)
+
+DONE?? :)
+DONE ftiaxnetai nul, pws to stamtaw?
+DONE prio doesnt work on reverse (only does first???)  -> den allazei to head! telika yphrxe ena else; exit
+DONE sjf+prio seg fault at exit (process appears twice???)
+DONE sto runsh den trexei to prio an einai :
+    ./scheduler PRIO 1000 reverse.txt
+
+    ./scheduler FCFS mixed.txt
+    ./scheduler SJF mixed.txt
+    ./scheduler RR 1000 mixed.txt
+    ./scheduler PRIO 1000 mixed.txt
+DONE Clean up after exit? probably all 3 queues + processes from exited!
+DONE create PRIO (and by extension modified rr functions)
+DONE create handler
+DONE change FCFS and SJF to work with handler
+DONE waitpid makes handler not run because it catches first!
+DONE what should the handler do?
+DONE global variable current process okay?
+DONE add debugging for stopped in non-dynamic runs (sigstop in first run!)
+https://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html#tag_15_04_03_03
+handler cant print?? SOLUTION: print after :)
+
+2 arguments algo and number give error for unfound algorithm
+
+
+    https://man7.org/linux/man-pages/man2/waitpid.2.html
+   A child that terminates, but has not been waited for becomes a
+       "zombie".  The kernel maintains a minimal set of information
+       about the zombie process (PID, termination status, resource usage
+       information) in order to allow the parent to later perform a wait
+       to obtain information about the child.  As long as a zombie is
+       not removed from the system via a wait, it will consume a slot in
+       the kernel process table, and if this table fills, it will not be
+       possible to create further processes.  If a parent process
+       terminates, then its "zombie" children (if any) are adopted by
+       init(1), (or by the nearest "subreaper" process as defined
+       through the use of the prctl(2) PR_SET_CHILD_SUBREAPER
+       operation); init(1) automatically performs a wait to remove the
+       zombies.
+
+
+Pseudocode for roundrobbinPRIO
+index=[0,range)
+current=rrhead
+while range>0:
+
+    while curr is not ready or stopped:
+        if it's exited: range--, current->next,pop
+        else : index++, current->next
+
+        if index==range or current is null: BREAK
+    if index==range or current is null: current=head, index=0, continue
+
+    else run, index++
+    
+    THEN
+    current=current->next
+    if current is EXITED: 
+        index--, range--
+        if current is head: rrhead=current->next
+        pop current
+
+    if index>=range: index=0, current=rrhead
+
